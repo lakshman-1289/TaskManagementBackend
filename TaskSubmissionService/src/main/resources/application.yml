@@ -1,0 +1,26 @@
+server:
+  port: 5003
+
+spring:
+  application:
+    name: SUBMISSION-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/task_submission_service
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update       # Use 'update' for development
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

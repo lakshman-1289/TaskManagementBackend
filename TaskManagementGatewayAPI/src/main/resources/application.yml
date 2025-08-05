@@ -1,0 +1,31 @@
+server:
+  port: 9191
+spring:
+  application:
+    name: Gateway-service
+  cloud:
+    gateway:
+      routes:
+      - id: user-service
+        uri: lb://USER-SERVICE
+        predicates:
+        - Path=/auth/**,/api/users/**, /
+      - id: task-service
+        uri: lb://TASK-SERVICE
+        predicates:
+        - Path=/api/tasks/**
+      - id: submission-service
+        uri: lb://SUBMISSION-SERVICE
+        predicates:
+        - Path=/api/submissions/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://localhost:8761/eureka
