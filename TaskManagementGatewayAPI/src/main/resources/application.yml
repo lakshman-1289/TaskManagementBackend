@@ -1,23 +1,36 @@
 server:
   port: 9191
+  
 spring:
   application:
     name: Gateway-service
+  profiles:
+    active: dev
   cloud:
     gateway:
       routes:
+      - id: auth-service
+        uri: lb://AUTH-SERVICE
+        predicates:
+        - Path=/auth/**
       - id: user-service
         uri: lb://USER-SERVICE
         predicates:
-        - Path=/auth/**,/api/users/**, /
+        - Path=/api/users/**, /
+        filters:
+        - JwtAuthenticationFilter
       - id: task-service
         uri: lb://TASK-SERVICE
         predicates:
         - Path=/api/tasks/**
+        filters:
+        - JwtAuthenticationFilter
       - id: submission-service
         uri: lb://SUBMISSION-SERVICE
         predicates:
         - Path=/api/submissions/**
+        filters:
+        - JwtAuthenticationFilter
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -29,3 +42,11 @@ eureka:
     client:
       serviceUrl:
         defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    com.nrn.gateway: INFO
+    org.springframework.cloud.gateway: DEBUG
+    io.jsonwebtoken: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

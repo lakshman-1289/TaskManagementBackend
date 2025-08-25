@@ -5,6 +5,7 @@ import java.util.List;
 import com.nrn.users.model.User;
 
 public interface UserService {
-    public User getUserProfileByJwt(String jwt);
+    public User getUserByEmail(String email);
+    public User getUserById(Long userId);
     public List<User> getAllUsers();
 }

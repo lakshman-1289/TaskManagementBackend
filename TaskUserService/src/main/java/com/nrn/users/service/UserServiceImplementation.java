@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nrn.users.config.JwtProvider;
 import com.nrn.users.model.User;
 import com.nrn.users.repository.UserRepository;
 
@@ -20,18 +19,26 @@ public class UserServiceImplementation implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User getUserProfileByJwt(String jwt) {
-        logger.info("Extracting user profile from JWT");
-        String email = JwtProvider.getEmailFromJwtToken(jwt);
-        logger.info("Extracted email from JWT: {}", email);
+    public User getUserById(Long userId) {
+        logger.info("Fetching user by ID: {}", userId);
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            logger.info("User found with ID: {} (email: {})", userId, user.getEmail());
+        } else {
+            logger.warn("No user found with ID: {}", userId);
+        }
+        return user;
+    }
 
+    @Override
+    public User getUserByEmail(String email) {
+        logger.info("Fetching user by email: {}", email);
         User user = userRepository.findByEmail(email);
         if (user != null) {
             logger.info("User found with email: {}", email);
         } else {
             logger.warn("No user found with email: {}", email);
         }
-
         return user;
     }
 
