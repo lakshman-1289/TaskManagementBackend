@@ -85,7 +85,7 @@ public class SubmissionServiceImplementation implements SubmissionService {
     public List<Submission> getTaskSubmissionsByTaskId(Long taskId) {
         logger.info("Fetching submissions for task ID: {}", taskId);
         
-        List<Submission> submissions = submissionRepository.findByTaskId(taskId);
+        List<Submission> submissions = submissionRepository.findByTaskIdAndStatus(taskId, "PENDING");
         logger.info("Found {} submissions for task ID: {}", submissions.size(), taskId);
         return submissions;
     }

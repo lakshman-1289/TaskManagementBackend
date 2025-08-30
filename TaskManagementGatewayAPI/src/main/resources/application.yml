@@ -16,7 +16,7 @@ spring:
       - id: user-service
         uri: lb://USER-SERVICE
         predicates:
-        - Path=/api/users/**, /
+        - Path=/api/users/**
         filters:
         - JwtAuthenticationFilter
       - id: task-service
@@ -31,12 +31,14 @@ spring:
         - Path=/api/submissions/**
         filters:
         - JwtAuthenticationFilter
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+
+# CORS Configuration
+  # Supports multiple frontend ports for different users
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,http://localhost:5178,http://localhost:5179,http://localhost:5180}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
 
 eureka:
     client:
@@ -47,6 +49,8 @@ logging:
   level:
     com.nrn.gateway: INFO
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
     io.jsonwebtoken: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
