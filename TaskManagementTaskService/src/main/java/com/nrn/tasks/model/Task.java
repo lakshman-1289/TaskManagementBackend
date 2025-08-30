@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,11 @@ public class Task {
     private String title;
     private String description;
     private String image;
-    private Long assignedUserId;
+    
+    // Changed from single assigned user to list of assigned users
+    @ElementCollection
+    private List<Long> assignedUserIds = new ArrayList<>();
+    
     private List<String> tags = new ArrayList<>();
     private LocalDateTime deadline;
     private LocalDateTime createdAt;

@@ -118,9 +118,14 @@ public class TaskServiceImplementation implements TaskService {
         Task existingTask = getTaskById(taskId);
         logger.info("Found task for assignment: {}", existingTask.getTitle());
         
-        existingTask.setAssignedUserId(userId);
-        existingTask.setStatus(TaskStatus.ASSIGNED);
-        // existingTask.setStatus(TaskStatus.DONE);
+        // Add user to the list of assigned users instead of replacing
+        if (!existingTask.getAssignedUserIds().contains(userId)) {
+            existingTask.getAssignedUserIds().add(userId);
+            // Only change status to ASSIGNED if it was PENDING
+            if (existingTask.getStatus() == TaskStatus.PENDING) {
+                existingTask.setStatus(TaskStatus.ASSIGNED);
+            }
+        }
         
         Task savedTask = taskRepository.save(existingTask);
         logger.info("Task ID: {} successfully assigned to user ID: {}", taskId, userId);
@@ -131,7 +136,9 @@ public class TaskServiceImplementation implements TaskService {
     public List<Task> getAssignedUsersTask(Long userId, TaskStatus status) {
         logger.info("Fetching assigned tasks for user ID: {} with status: {}", userId, status);
         
-        List<Task> allTask = taskRepository.findByAssignedUserId(userId);
+        // Use the new repository method for better performance
+        List<Task> allTask = taskRepository.findByAssignedUserIdsContaining(userId);
+            
         logger.info("Total assigned tasks for user ID {}: {}", userId, allTask.size());
 
         List<Task> filteredTasks = allTask.stream().filter(
@@ -156,4 +163,3 @@ public class TaskServiceImplementation implements TaskService {
         return savedTask;
     }
 }
-
